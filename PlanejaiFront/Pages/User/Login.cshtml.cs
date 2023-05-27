@@ -23,7 +23,7 @@ namespace PlanejaiFront.Pages.User
         {
             if (!ModelState.IsValid || ExistingUser == null)
             {
-                if (ExistingUser == null)
+                if (ModelState.IsValid && ExistingUser == null)
                 {
                     ModelState.AddModelError("ExistingUser", "Dados inválidos. Confira os dados inseridos e tente novamente.");
                 }

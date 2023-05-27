@@ -15,12 +15,7 @@ namespace PlanejaiFront.Models
         [Required(ErrorMessage = "Informe um endereço de e-mail válido.")]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Informar uma senha.")]
         public string? Password { get; set; }
-
-        [Required(ErrorMessage = "Confirme sua senha.")]
-        [Compare("Password", ErrorMessage = "As senhas não são idênticas.")]
-        public string? ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Informe um número de telefone.")]
         public string? PhoneNumber { get; set; }
