@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Planejaí - Novo Evento";
 }
+
 <style>
     body {
         background-color: #e9ecef;
@@ -58,7 +59,7 @@
 
 <div class="wrapper">
     <div class="form-container">
-        <h2>Novo Evento</h2>
+        <h2>Novo evento</h2>
         <hr>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -107,8 +108,8 @@
                 <span asp-validation-for="NewEvent.Local" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary btn-block" value="Criar Evento" />
-                <a asp-page="/Index" class="btn btn-secondary btn-block">Cancelar</a>
+                <input type="submit" class="btn btn-primary btn-block" value="Criar evento" />
+                <a asp-page="/Events/Index" class="btn btn-secondary btn-block">Cancelar</a>
             </div>
         </form>
     </div>

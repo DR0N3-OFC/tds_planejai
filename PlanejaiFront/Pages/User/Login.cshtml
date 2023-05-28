@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Planejaí - Login";
 }
+
 <style>
     body {
         background-color: #e9ecef;
@@ -35,6 +36,14 @@
     .form-container label {
         font-weight: bold;
     }
+
+    p {
+        margin-bottom: 0;
+    }
+
+    p a:hover {
+        text-decoration: none;
+    }
 </style>
 
 <div class="wrapper">
@@ -60,5 +69,6 @@
                 <a asp-page="/Index" class="btn btn-secondary btn-block">Cancelar</a>
             </div>
         </form>
+        <p>Ainda não possui uma conta? <a asp-page="/User/Register">Cadastre-se</a></p>
     </div>
 </div>
