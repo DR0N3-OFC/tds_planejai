@@ -4,22 +4,23 @@ using PlanejaiFront.Models;
 
 namespace PlanejaiFront.Pages.Events
 {
-    public class Index : PageModel
+    public class Details : PageModel
     {
         [BindProperty]
-        public List<EventModel> EventsList { get; set; } = new ();
+        public EventModel? Event { get; set; }
+        public List<EventModel> EventsList { get; set; } = new();
 
-        public void OnGet()
+        public void OnGet(int? id)
         {
-            EventsList.Add(new EventModel 
+            EventsList.Add(new EventModel
             {
                 Id = 1,
                 Name = "Campeonato de Bolinha de Gude",
-                Description = "Um campeonato de bolinha de gude para você e sua família.", 
-                StartDate = new DateTime(2023, 06, 10), 
+                Description = "Um campeonato de bolinha de gude para você e sua família.",
+                StartDate = new DateTime(2023, 06, 10),
                 StartsAt = new DateTime(1, 1, 1, 9, 30, 0),
                 Local = "Casa da Mãe Joana",
-                EndDate = new DateTime(2023, 06, 15), 
+                EndDate = new DateTime(2023, 06, 15),
                 EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
                 Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
             });
@@ -36,6 +37,8 @@ namespace PlanejaiFront.Pages.Events
                 EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
                 Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
             });
+
+            Event = EventsList.FirstOrDefault(e => e.Id == id);
         }
     }
 }

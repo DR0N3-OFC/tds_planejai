@@ -1,4 +1,4 @@
-﻿@page "/Events"
+﻿@page
 @model PlanejaiFront.Pages.Events.Index
 @{
     ViewData["Title"] = "Planejaí - Eventos";
@@ -79,16 +79,17 @@
     else
     {
         <h2 class="text-center display-4">Seus eventos</h2>
-        @foreach (var Event in Model.EventsList)
+        @foreach (var eventModel in Model.EventsList)
         {
-            <a asp-page="#" class="card-link">
+            <a asp-page="/Events/Details" asp-route-id="@eventModel.Id" class="card-link">
                 <div class="event-card card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX5LUaXBLFFTZ9Bh9ypF8pzNFZP4mILaNoKQ&usqp=CAU" alt="Imagem do evento @(Event.Name).">
+                    <img src="https://tvc16.com/portal/wp-content/uploads/2022/06/WhatsApp-Image-2022-06-05-at-15.59.15.jpeg" alt="Imagem do evento @(eventModel.Name).">
                     <div class="event-card-text">
-                        <h3>@Event.Name</h3>
-                        <p class="card-text">@Event.Description</p>
-                        <p class="card-text">Início: @Event.StartDate?.ToShortDateString() - @Event.StartsAt?.ToShortTimeString()</p>
-                        <p class="card-text">Encerramento: @Event.EndDate?.ToShortDateString() - @Event.EndsAt?.ToShortTimeString()</p>
+                        <h3>@eventModel.Name</h3>
+                        <p class="card-text">@eventModel.Description</p>
+                        <p class="card-text"><strong>Local:</strong> @eventModel.Local</p>
+                        <p class="card-text"><strong>Início:</strong> @eventModel.StartDate?.ToShortDateString() - @eventModel.StartsAt?.ToShortTimeString()</p>
+                        <p class="card-text"><strong>Encerramento:</strong> @eventModel.EndDate?.ToShortDateString() - @eventModel.EndsAt?.ToShortTimeString()</p>
                     </div>
                 </div>
             </a>
