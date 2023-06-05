@@ -1,11 +1,9 @@
-﻿@page
-@model PlanejaiFront.Pages.Calendar.IndexModel
+﻿@page "/Calendar/{month:int}/{year:int}"
+@model PlanejaiFront.Pages.Calendar.Index
 @{
-    int currentMonth = DateTime.Now.Month;
-    int currentYear = DateTime.Now.Year;
-    DateTime firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    DateTime firstDay = new DateTime(DateTime.Now.Year, Model.Month, 1);
     int daysInCurrentMonth = DateTime.DaysInMonth(firstDay.Year, firstDay.Month);
-    DateTime lastDay = new DateTime(currentYear, currentMonth, daysInCurrentMonth);
+    DateTime lastDay = new DateTime(Model.Year, Model.Month, daysInCurrentMonth);
     int dayOfWeekFirst = ((int)firstDay.DayOfWeek > 0) ? (int)firstDay.DayOfWeek : 7;
     int dayOfWeekLast = ((int)lastDay.DayOfWeek > 0) ? (int)lastDay.DayOfWeek : 7;
 }
@@ -63,6 +61,10 @@
 </style>
 
 <div class="wrapper">
+    <form method="post">
+        <input type="submit" name="monthOffset" class="btn btn-primary left-button" value="<" />
+        <input type="submit" name="monthOffset" class="btn btn-primary right-button" value=">" />
+    </form>
     <div class="week-day-container">
         <div class="calendar-cell weekday-label">Dom</div>
         <div class="calendar-cell weekday-label">Seg</div>
@@ -117,4 +119,4 @@
                 @:</div>
             }
         }
-    </div>
+</div>
