@@ -1,4 +1,5 @@
 ﻿@page "/Calendar/{month:int}/{year:int}"
+@using System.Globalization;
 @model PlanejaiFront.Pages.Calendar.Index
 @{
     DateTime firstDay = new DateTime(DateTime.Now.Year, Model.Month, 1);
@@ -6,6 +7,9 @@
     DateTime lastDay = new DateTime(Model.Year, Model.Month, daysInCurrentMonth);
     int dayOfWeekFirst = ((int)firstDay.DayOfWeek > 0) ? (int)firstDay.DayOfWeek : 7;
     int dayOfWeekLast = ((int)lastDay.DayOfWeek > 0) ? (int)lastDay.DayOfWeek : 7;
+
+    TextInfo textInfo = new CultureInfo("pt-BR", false).TextInfo;
+    string monthName = textInfo.ToTitleCase(firstDay.ToString("MMMM"));
 }
 
 <style>
@@ -13,20 +17,21 @@
         background-color: #e9ecef;
     }
 
-    .wrapper {
-        height: 60vh;
+    .wrapper {        
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        background-color: #f1f1f1;
         margin: 10vh auto;
         width: 70%;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
     }
 
     .calendar-container {
         height: 17.144%;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         background-color: #fff;
-        border-radius: 5px;
+        border-radius: 0 0 5px 5px;
     }
 
     .calendar-cell {
@@ -58,65 +63,84 @@
         font-weight: bold;
         background-color: #f1f1f1;
     }
+
+    .buttons {
+        display: flex;
+        border-radius: inherit;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .buttons input {
+        margin: 10px;
+    }
+
+    .calendar-body {
+        height: 60vh;
+    }
 </style>
 
+
 <div class="wrapper">
-    <form method="post">
-        <input type="submit" name="monthOffset" class="btn btn-primary left-button" value="<" />
-        <input type="submit" name="monthOffset" class="btn btn-primary right-button" value=">" />
+    <form class="buttons" method="post">
+        <input type="submit" name="monthOffset" class="btn btn-lg btn-primary left-button" value="<" />
+        <h3>@monthName de @Model.Year</h3>
+        <input type="submit" name="monthOffset" class="btn btn-lg btn-primary right-button" value=">" />
     </form>
-    <div class="week-day-container">
-        <div class="calendar-cell weekday-label">Dom</div>
-        <div class="calendar-cell weekday-label">Seg</div>
-        <div class="calendar-cell weekday-label">Ter</div>
-        <div class="calendar-cell weekday-label">Qua</div>
-        <div class="calendar-cell weekday-label">Qui</div>
-        <div class="calendar-cell weekday-label">Sex</div>
-        <div class="calendar-cell weekday-label">Sáb</div>
-    </div>
-    <div class="calendar-container">
-        <!-- filling up space of previous month -->
-        @for (int a = dayOfWeekFirst; a > 0; a--)
-        {
-            DateTime previousMonth = firstDay.AddMonths(-1);
-            int daysInPreviousMonth = DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month);
-            int day = daysInPreviousMonth - (a - 1);
-            <div class="calendar-cell previous-month-day">@day</div>
-        }
-
-        <!-- filling up space of current month -->
-        @for (int i = 1; i <= daysInCurrentMonth; i++)
-        {
-            DateTime renderedDay = new DateTime(firstDay.Year, firstDay.Month, i);
-
-            // if Sunday
-            if (renderedDay.DayOfWeek == DayOfWeek.Sunday)
+    <div class="calendar-body">
+        <div class="week-day-container">
+            <div class="calendar-cell weekday-label">Dom</div>
+            <div class="calendar-cell weekday-label">Seg</div>
+            <div class="calendar-cell weekday-label">Ter</div>
+            <div class="calendar-cell weekday-label">Qua</div>
+            <div class="calendar-cell weekday-label">Qui</div>
+            <div class="calendar-cell weekday-label">Sex</div>
+            <div class="calendar-cell weekday-label">Sáb</div>
+        </div>
+        <div class="calendar-container">
+            <!-- filling up space of previous month -->
+            @for (int a = dayOfWeekFirst; a > 0; a--)
             {
-                @:</div><div class="calendar-container">
+                DateTime previousMonth = firstDay.AddMonths(-1);
+                int daysInPreviousMonth = DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month);
+                int day = daysInPreviousMonth - (a - 1);
+                <div class="calendar-cell previous-month-day">@day</div>
             }
 
-            // if Sunday or Saturday
-            if (renderedDay.DayOfWeek == DayOfWeek.Sunday || renderedDay.DayOfWeek == DayOfWeek.Saturday)
+            <!-- filling up space of current month -->
+            @for (int i = 1; i <= daysInCurrentMonth; i++)
             {
-                <div class="calendar-cell calendar-holiday">@i</div>
-            }
-            // if normal day
-            else
-            {
-                <div class="calendar-cell">@i</div>
-            }
+                DateTime renderedDay = new DateTime(firstDay.Year, firstDay.Month, i);
 
-            // if last day of the month
-            if (i == daysInCurrentMonth)
-            {
-                int remainingCells = 7 - ((int)lastDay.DayOfWeek + 1);
-                for (int r = 1; r <= remainingCells; r++)
+                // if Sunday
+                if (renderedDay.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    DateTime nextMonth = lastDay.AddMonths(1);
-                    int nextMonthDay = r;
-                    <div class="calendar-cell next-month-day">@nextMonthDay</div>
+                    @:</div><div class="calendar-container">
                 }
-                @:</div>
+
+                // if Sunday or Saturday
+                if (renderedDay.DayOfWeek == DayOfWeek.Sunday || renderedDay.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    <div class="calendar-cell calendar-holiday">@i</div>
+                }
+                // if normal day
+                else
+                {
+                    <div class="calendar-cell">@i</div>
+                }
+
+                // if last day of the month
+                if (i == daysInCurrentMonth)
+                {
+                    int remainingCells = 7 - ((int)lastDay.DayOfWeek + 1);
+                    for (int r = 1; r <= remainingCells; r++)
+                    {
+                        DateTime nextMonth = lastDay.AddMonths(1);
+                        int nextMonthDay = r;
+                        <div class="calendar-cell next-month-day">@nextMonthDay</div>
+                    }
+                    @:</div>
+                }
             }
-        }
+            </div>
 </div>

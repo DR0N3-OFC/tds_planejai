@@ -10,7 +10,6 @@ namespace PlanejaiFront.Pages.Calendar
         [BindProperty]
         public int Year { get; set; }
 
-        [HttpGet]
         public void OnGet(int month, int year)
         {
             if (month != 0 && year != 0)
@@ -20,24 +19,23 @@ namespace PlanejaiFront.Pages.Calendar
             }
         }
 
-        [HttpPost]
-        public IActionResult OnPostChangeMonth(string monthOffset)
+        public IActionResult OnPostAsync(string monthOffset)
         {
             if (monthOffset == "<")
             {
                 if (Month! == 1)
                 {
-                    return Redirect($"/Calendar/Index/12/{Year - 1}");
+                    return Redirect($"/Calendar/12/{Year - 1}");
                 }
-                return Redirect($"/Calendar/Index/{Month - 1}/{Year}");
+                return Redirect($"/Calendar/{Month - 1}/{Year}");
             }
             else
             {
                 if (Month == 12)
                 {
-                    return Redirect($"/Calendar/Index/1/{Year + 1}");
+                    return Redirect($"/Calendar/1/{Year + 1}");
                 }
-                return Redirect($"/Calendar/Index/{Month + 1}/{Year}");
+                return Redirect($"/Calendar/{Month + 1}/{Year}");
             }
         }
     }
