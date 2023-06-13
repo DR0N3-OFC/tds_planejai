@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: planejai_postgres
+    container_name: planejai_db
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - planejai_volume:/var/lib/postgresql/data
+
+  webapi:
+    build: ./PlanejaiBack
+    container_name: planejai_webapi
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+
+  # planejaifront:
+  #   build: ./PlanejaiFront
+  #   container_name: planejai_front
+  #   ports:
+  #     - 7041:7041
+volumes:
+  planejai_volume:

@@ -9,9 +9,15 @@ namespace PlanejaiFront.Pages.Events
         [BindProperty]
         public EventModel? Event { get; set; }
         public List<EventModel> EventsList { get; set; } = new();
-
+        public List<GuestModel> GuestList { get; set; } = new();
+        
         public void OnGet(int? id)
         {
+            GuestList.Add(new GuestModel { Id = 1, Name = "Bruno", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
+            GuestList.Add(new GuestModel { Id = 2, Name = "Luccas", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
+            GuestList.Add(new GuestModel { Id = 1, Name = "Giglioli", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
+            GuestList.Add(new GuestModel { Id = 1, Name = "Eder", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
+
             EventsList.Add(new EventModel
             {
                 Id = 1,

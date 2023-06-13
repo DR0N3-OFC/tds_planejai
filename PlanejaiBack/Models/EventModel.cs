@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlanejaiFront.Models
+namespace PlanejaiBack.Models
 {
     public class EventModel
     {

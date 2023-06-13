@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlanejaiFront.Models
+namespace PlanejaiBack.Models
 {
     public class UserModel
     {
@@ -17,7 +17,7 @@ namespace PlanejaiFront.Models
 
         [Required(ErrorMessage = "Informe um endereço de e-mail válido.")]
         public string? Email { get; set; }
-
+        [Required(ErrorMessage = "Informe uma senha.")]
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "Informe um número de telefone.")]

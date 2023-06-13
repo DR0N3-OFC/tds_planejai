@@ -98,7 +98,6 @@
             <div class="calendar-cell weekday-label">Sáb</div>
         </div>
         <div class="calendar-container">
-            <!-- filling up space of previous month -->
             @for (int a = dayOfWeekFirst; a > 0; a--)
             {
                 DateTime previousMonth = firstDay.AddMonths(-1);
@@ -107,29 +106,24 @@
                 <div class="calendar-cell previous-month-day">@day</div>
             }
 
-            <!-- filling up space of current month -->
             @for (int i = 1; i <= daysInCurrentMonth; i++)
             {
                 DateTime renderedDay = new DateTime(firstDay.Year, firstDay.Month, i);
 
-                // if Sunday
                 if (renderedDay.DayOfWeek == DayOfWeek.Sunday)
                 {
                     @:</div><div class="calendar-container">
                 }
 
-                // if Sunday or Saturday
                 if (renderedDay.DayOfWeek == DayOfWeek.Sunday || renderedDay.DayOfWeek == DayOfWeek.Saturday)
                 {
                     <div class="calendar-cell calendar-holiday">@i</div>
                 }
-                // if normal day
                 else
                 {
                     <div class="calendar-cell">@i</div>
                 }
 
-                // if last day of the month
                 if (i == daysInCurrentMonth)
                 {
                     int remainingCells = 7 - ((int)lastDay.DayOfWeek + 1);

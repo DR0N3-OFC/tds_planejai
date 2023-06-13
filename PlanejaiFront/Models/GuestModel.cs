@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanejaiFront.Models
 {
-    public class UserModel
+    public class GuestModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,9 +18,10 @@ namespace PlanejaiFront.Models
         [Required(ErrorMessage = "Informe um endereço de e-mail válido.")]
         public string? Email { get; set; }
 
-        public string? Password { get; set; }
-
         [Required(ErrorMessage = "Informe um número de telefone.")]
         public string? PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "Evento é obrigatório")]
+        public EventModel? Event { get; set; }        
     }
 }
