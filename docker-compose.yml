@@ -1,8 +1,9 @@
 version: "3.8"
 
 services:
+
   postgres:
-    image: planejai_postgres
+    image: dr0n3ofc/planejai_db:v0.0.1
     container_name: planejai_db
     environment:
       POSTGRES_PASSWORD: postgres
@@ -19,10 +20,11 @@ services:
     depends_on:
       - postgres
 
-  # planejaifront:
-  #   build: ./PlanejaiFront
-  #   container_name: planejai_front
-  #   ports:
-  #     - 7041:7041
+  planejaifront:
+    build: ./PlanejaiFront
+    container_name: planejai_frontend
+    ports:
+      - 5293:5293
+
 volumes:
   planejai_volume:

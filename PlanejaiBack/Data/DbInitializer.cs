@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using PlanejaiBack.Models;
+﻿using PlanejaiBack.Models;
 
 namespace PlanejaiBack.Data
 {

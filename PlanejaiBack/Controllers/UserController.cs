@@ -29,6 +29,19 @@ namespace PlanejaiBack.Controllers
             return Ok(user);
         }
 
+        [HttpGet("/Users/{email}/{password}")]
+        public IActionResult GetByEmailAndPassword([FromRoute] string email, string password, [FromServices] AppDbContext context)
+        {
+            var user = context.Users!.FirstOrDefault(u => (u.Email == email) && (u.Password == password));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
         [HttpPost("/Users/")]
         public IActionResult Post([FromBody] UserModel user, [FromServices] AppDbContext context)
         {
