@@ -19,7 +19,7 @@ namespace PlanejaiBack.Controllers
         [HttpGet("/Users/{id:int}")]
         public IActionResult GetByID([FromRoute] int id, [FromServices] AppDbContext context)
         {
-            var user = context.Users!.FirstOrDefault(u => u.Id == id);
+            var user = context.Users!.FirstOrDefault(u => u.UserId == id);
 
             if (user == null)
             {
@@ -36,7 +36,7 @@ namespace PlanejaiBack.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Dados inválidos. Confira os dados inseridos e tente novamente.");
             }
 
             return Ok(user);
@@ -45,23 +45,23 @@ namespace PlanejaiBack.Controllers
         [HttpPost("/Users/")]
         public IActionResult Post([FromBody] UserModel user, [FromServices] AppDbContext context)
         {
-            var existingUser = context.Users!.SingleOrDefault(u => u.Id == user.Id);
+            var existingUser = context.Users!.SingleOrDefault(u => u.Email == user.Email);
 
             if (existingUser == null)
             {
                 context.Users!.Add(user);
                 context.SaveChanges();
 
-                return Created($"/{user.Id}", user);
+                return Created($"/{user.UserId}", user);
             }
 
-            return BadRequest("O usuário já existe!");
+            return BadRequest("O e-mail informado já está em uso.");
         }
 
         [HttpPut("/Users/{id:int}")]
         public IActionResult Put([FromRoute] int id, [FromBody] UserModel user, [FromServices] AppDbContext context)
         {
-            var existingUser = context.Users!.FirstOrDefault(u => u.Id == id);
+            var existingUser = context.Users!.FirstOrDefault(u => u.UserId == id);
 
             if (existingUser != null)
             {

@@ -7,7 +7,7 @@ namespace PlanejaiFront.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
+        public int? GuestId { get; set; }
 
         [Required(ErrorMessage = "Informe seu nome.")]
         public string? Name { get; set; }
@@ -21,7 +21,6 @@ namespace PlanejaiFront.Models
         [Required(ErrorMessage = "Informe um número de telefone.")]
         public string? PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Evento é obrigatório")]
-        public EventModel? Event { get; set; }        
+        public List<EventsGuests>? EventsGuests { get; set; } = new List<EventsGuests>();
     }
 }

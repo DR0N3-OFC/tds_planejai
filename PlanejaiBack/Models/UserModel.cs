@@ -7,7 +7,7 @@ namespace PlanejaiBack.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
+        public int? UserId { get; set; }
 
         [Required(ErrorMessage = "Informe seu nome.")]
         public string? Name { get; set; }
@@ -17,10 +17,13 @@ namespace PlanejaiBack.Models
 
         [Required(ErrorMessage = "Informe um endereço de e-mail válido.")]
         public string? Email { get; set; }
+
         [Required(ErrorMessage = "Informe uma senha.")]
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "Informe um número de telefone.")]
         public string? PhoneNumber { get; set; }
+
+        public List<EventModel>? Events { get; set; } = new List<EventModel>();
     }
 }

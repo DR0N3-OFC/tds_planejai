@@ -44,15 +44,15 @@
         <hr>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="NewUser.Id" />
+            <input type="hidden" asp-for="NewUser.UserId"/>
             <div class="form-group">
                 <label asp-for="NewUser.Name">Nome:</label>
-                <input asp-for="NewUser.Name" type="text" class="form-control">
+                <input asp-for="NewUser.Name" type="text" class="form-control" onkeyup="handleText(event)">
                 <span asp-validation-for="NewUser.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="NewUser.LastName">Sobrenome:</label>
-                <input asp-for="NewUser.LastName" type="text" class="form-control">
+                <input asp-for="NewUser.LastName" type="text" class="form-control" onkeyup="handleText(event)">
                 <span asp-validation-for="NewUser.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -62,7 +62,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="NewUser.PhoneNumber">Telefone:</label>
-                <input asp-for="NewUser.PhoneNumber" type="text" class="form-control">
+                <input asp-for="NewUser.PhoneNumber" type="text" class="form-control" onkeyup="handlePhone(event)" maxlength="15">
                 <span asp-validation-for="NewUser.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -82,3 +82,28 @@
         </form>
     </div>
 </div>
+
+<script>
+    const lettersOnly = (value) => {
+		const regex = /^[a-zA-ZÀ-ú\s'-]*$/;
+		return regex.test(value) && !/\d/.test(value);
+	}
+	const handleText = (event) => {
+		let input = event.target;
+		let value = input.value;
+		if (!lettersOnly(value)) {
+			input.value = value.slice(0, -1);
+		}
+	}
+    const handlePhone = (event) => {
+        let input = event.target
+        input.value = phoneMask(input.value)
+    }
+    const phoneMask = (value) => {
+        if (!value) return ""
+        value = value.replace(/\D/g, '')
+        value = value.replace(/(\d{2})(\d)/, "($1) $2")
+        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
+        return value
+    }
+</script>

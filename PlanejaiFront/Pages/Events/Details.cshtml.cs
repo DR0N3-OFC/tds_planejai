@@ -1,50 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using PlanejaiFront.Models;
+using PlanejaiFront.Models.APIConnection;
 
 namespace PlanejaiFront.Pages.Events
 {
     public class Details : PageModel
     {
         [BindProperty]
-        public EventModel? Event { get; set; }
-        public List<EventModel> EventsList { get; set; } = new();
+        public EventModel? Event { get; set; } = new();
+
         public List<GuestModel> GuestList { get; set; } = new();
-        
-        public void OnGet(int? id)
+
+        readonly HttpContext httpContext;
+        public Details(IHttpContextAccessor httpContextAccessor)
         {
-            GuestList.Add(new GuestModel { Id = 1, Name = "Bruno", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
-            GuestList.Add(new GuestModel { Id = 2, Name = "Luccas", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
-            GuestList.Add(new GuestModel { Id = 1, Name = "Giglioli", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
-            GuestList.Add(new GuestModel { Id = 1, Name = "Eder", LastName = "Facundo", Email = "email@email.com", PhoneNumber = "12345-6789", Event = Event });
+            httpContext = httpContextAccessor.HttpContext!;
+        }
 
-            EventsList.Add(new EventModel
-            {
-                Id = 1,
-                Name = "Campeonato de Bolinha de Gude",
-                Description = "Um campeonato de bolinha de gude para você e sua família.",
-                StartDate = new DateTime(2023, 06, 10),
-                StartsAt = new DateTime(1, 1, 1, 9, 30, 0),
-                Local = "Casa da Mãe Joana",
-                EndDate = new DateTime(2023, 06, 15),
-                EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
-            });
+        public async Task<IActionResult> OnGetAsync(int id)
+        {
+            var httpClient = new HttpClient();
+            var url = $"{APIConnection.URL}/EventsByUser/{httpContext.Session.GetInt32("UserID")}";
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-            EventsList.Add(new EventModel
-            {
-                Id = 2,
-                Name = "Campeonato de Futebol de Botão",
-                Description = "Um campeonato de futebol de botão para você e sua família.",
-                StartDate = new DateTime(2023, 06, 10),
-                StartsAt = new DateTime(1, 1, 1, 9, 30, 0),
-                Local = "UTFPR - Medianeira",
-                EndDate = new DateTime(2023, 06, 15),
-                EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
-            });
+            var response = await httpClient.SendAsync(requestMessage);
+            var content = await response.Content.ReadAsStringAsync();
+            var eventsList = JsonConvert.DeserializeObject<List<EventModel>>(content);
 
-            Event = EventsList.FirstOrDefault(e => e.Id == id);
+            Event = eventsList!.Where(e => e.EventId == id).FirstOrDefault();
+
+            httpClient = new HttpClient();
+            url = $"{APIConnection.URL}/Users/{httpContext.Session.GetInt32("UserID")}";
+            requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+            response = await httpClient.SendAsync(requestMessage);
+            content = await response.Content.ReadAsStringAsync();
+            var organizer = JsonConvert.DeserializeObject<UserModel>(content);
+
+            Event!.Organizer = organizer;
+
+            return Page();
         }
     }
 }

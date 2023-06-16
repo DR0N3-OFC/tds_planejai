@@ -1,41 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using PlanejaiFront.Models;
+using PlanejaiFront.Models.APIConnection;
 
 namespace PlanejaiFront.Pages.Events
 {
     public class Index : PageModel
     {
         [BindProperty]
-        public List<EventModel> EventsList { get; set; } = new ();
+        public List<EventModel>? EventsList { get; set; }
 
-        public void OnGet()
+        readonly HttpContext httpContext;
+        public Index (IHttpContextAccessor httpContextAccessor)
         {
-            EventsList.Add(new EventModel 
-            {
-                Id = 1,
-                Name = "Campeonato de Bolinha de Gude",
-                Description = "Um campeonato de bolinha de gude para você e sua família.", 
-                StartDate = new DateTime(2023, 06, 10), 
-                StartsAt = new DateTime(1, 1, 1, 9, 30, 0),
-                Local = "Casa da Mãe Joana",
-                EndDate = new DateTime(2023, 06, 15), 
-                EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
-            });
+            httpContext = httpContextAccessor.HttpContext!;
+        }
 
-            EventsList.Add(new EventModel
+        public async Task<IActionResult> OnGetAsync()
+        {
+            if (httpContext.Session.GetInt32("UserID") == null) 
             {
-                Id = 2,
-                Name = "Campeonato de Futebol de Botão",
-                Description = "Um campeonato de futebol de botão para você e sua família.",
-                StartDate = new DateTime(2023, 06, 10),
-                StartsAt = new DateTime(1, 1, 1, 9, 30, 0),
-                Local = "UTFPR - Medianeira",
-                EndDate = new DateTime(2023, 06, 15),
-                EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                Organizer = new UserModel { Id = 1, Name = "Bruno", LastName = "Facundo" },
-            });
+                return RedirectToPage("/User/Login");
+            }
+
+            var httpClient = new HttpClient();
+            var url = $"{APIConnection.URL}/EventsByUser/{httpContext.Session.GetInt32("UserID")}";
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = await httpClient.SendAsync(requestMessage);
+            var content = await response.Content.ReadAsStringAsync();
+            var eventsList = JsonConvert.DeserializeObject<List<EventModel>>(content);
+
+            EventsList = eventsList;
+
+            return Page();
         }
     }
 }

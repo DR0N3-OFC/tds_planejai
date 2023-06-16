@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -22,31 +23,46 @@ namespace PlanejaiFront.Pages.User
         [Compare("Password", ErrorMessage = "As senhas não são idênticas.")]
         public string? ConfirmPassword { get; set; }
 
-        public Register () { }
+        readonly HttpContext httpContext;
+        public Register (IHttpContextAccessor httpContextAccessor)
+        {
+            httpContext = httpContextAccessor.HttpContext!;
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
-                return Page();
-
-            try
             {
-                NewUser.Password = Password;
+                return Page();
+            }
 
-                var httpClient = new HttpClient();
-                var url = $"{APIConnection.URL}/Users/";
+            NewUser.Password = Password;
 
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
-                var jsonUser = JsonConvert.SerializeObject(NewUser);
-                requestMessage.Content = new StringContent(jsonUser, Encoding.UTF8, "application/json");
+            var httpClient = new HttpClient();
+            var url = $"{APIConnection.URL}/Users/";
 
-                var response = await httpClient.SendAsync(requestMessage);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
+            var jsonUser = JsonConvert.SerializeObject(NewUser);
+            requestMessage.Content = new StringContent(jsonUser, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var createdUserUrl = response.Headers.Location?.ToString();
+                var userId = Convert.ToInt32(createdUserUrl?.Split('/').LastOrDefault());
+
+                httpContext.Session.SetInt32("UserID", userId);
 
                 return RedirectToPage("/Events/Index");
             }
-            catch (BadHttpRequestException)
+            else
             {
-                return RedirectToPage("/Index");
+                var errorResponse = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError("NewUser.Email", errorResponse);
+
+                return Page();
             }
         }
     }

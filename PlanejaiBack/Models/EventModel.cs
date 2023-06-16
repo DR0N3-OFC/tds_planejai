@@ -7,7 +7,7 @@ namespace PlanejaiBack.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
+        public int? EventId { get; set; }
 
         [Required(ErrorMessage = "Informe um nome.")]
         public string? Name { get; set; }
@@ -29,7 +29,10 @@ namespace PlanejaiBack.Models
         [Required(ErrorMessage = "Informe um local.")]
         public string? Local { get; set; }
 
+        public int OrganizerId { get; set; }
         public UserModel? Organizer { get; set; }
+
+        public List<EventsGuests>? EventsGuests { get; set; } = new List<EventsGuests>();
 
         public bool DatesAreValid ()
         {

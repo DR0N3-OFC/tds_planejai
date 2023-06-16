@@ -52,7 +52,8 @@ namespace PlanejaiBack.Data
                     Local = "Casa da Mãe Joana",
                     EndDate = new DateTime(2023, 06, 15),
                     EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                    Organizer = users[0]
+                    Organizer = users[0],
+                    OrganizerId = 1
                 },
 
                 new EventModel
@@ -64,21 +65,12 @@ namespace PlanejaiBack.Data
                     Local = "UTFPR - Medianeira",
                     EndDate = new DateTime(2023, 06, 15),
                     EndsAt = new DateTime(1, 1, 1, 22, 30, 0),
-                    Organizer = users[1]
+                    Organizer = users[1],
+                    OrganizerId = 2
                 },
             };
 
             context.AddRange(events);
-
-            var guests = new List<GuestModel>
-            {
-                new GuestModel { Name = "Bruno", LastName = "Facundo", Email = "bruno@email.com", PhoneNumber = "(45) 12345-6789", Event = events[0] },
-                new GuestModel { Name = "Luccas", LastName = "Facundo", Email = "luccas@email.com", PhoneNumber = "(45) 12345-6789", Event = events[1] },
-                new GuestModel { Name = "Carlinhos", LastName = "da Silva", Email = "carlinhos@email.com", PhoneNumber = "(45) 12345-6789", Event = events[0] },
-                new GuestModel { Name = "Pedrinho", LastName = "Acorda", Email = "pedrinho@email.com", PhoneNumber = "(45) 12345-6789", Event = events[1] },
-            };
-
-            context.AddRange(guests);
 
             context.SaveChanges();
         }

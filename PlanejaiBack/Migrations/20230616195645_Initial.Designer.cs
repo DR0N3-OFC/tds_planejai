@@ -12,8 +12,8 @@ using PlanejaiBack.Data;
 namespace PlanejaiBack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230613014821_Initialize")]
-    partial class Initialize
+    [Migration("20230616195645_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace PlanejaiBack.Migrations
 
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int?>("EventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("EventId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -63,27 +63,39 @@ namespace PlanejaiBack.Migrations
                         .IsRequired()
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("EventId");
 
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Events", (string)null);
                 });
 
+            modelBuilder.Entity("PlanejaiBack.Models.EventsGuests", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GuestId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EventId", "GuestId");
+
+                    b.HasIndex("GuestId");
+
+                    b.ToTable("EventsGuests");
+                });
+
             modelBuilder.Entity("PlanejaiBack.Models.GuestModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int?>("GuestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("GuestId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -97,20 +109,18 @@ namespace PlanejaiBack.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
+                    b.HasKey("GuestId");
 
                     b.ToTable("Guests", (string)null);
                 });
 
             modelBuilder.Entity("PlanejaiBack.Models.UserModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -132,7 +142,7 @@ namespace PlanejaiBack.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -140,21 +150,44 @@ namespace PlanejaiBack.Migrations
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
                     b.HasOne("PlanejaiBack.Models.UserModel", "Organizer")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("OrganizerId");
 
                     b.Navigation("Organizer");
                 });
 
-            modelBuilder.Entity("PlanejaiBack.Models.GuestModel", b =>
+            modelBuilder.Entity("PlanejaiBack.Models.EventsGuests", b =>
                 {
                     b.HasOne("PlanejaiBack.Models.EventModel", "Event")
-                        .WithMany()
+                        .WithMany("EventsGuests")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PlanejaiBack.Models.GuestModel", "Guest")
+                        .WithMany("EventsGuests")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Event");
+
+                    b.Navigation("Guest");
+                });
+
+            modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
+                {
+                    b.Navigation("EventsGuests");
+                });
+
+            modelBuilder.Entity("PlanejaiBack.Models.GuestModel", b =>
+                {
+                    b.Navigation("EventsGuests");
+                });
+
+            modelBuilder.Entity("PlanejaiBack.Models.UserModel", b =>
+                {
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }

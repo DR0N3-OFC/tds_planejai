@@ -44,6 +44,10 @@
     p a:hover {
         text-decoration: none;
     }
+
+    .validation-group {
+        margin: 0 0 10px 0;
+    }
 </style>
 
 <div class="wrapper">
@@ -62,8 +66,10 @@
                 <input asp-for="Password" type="password" class="form-control">
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="ExistingUser">
-            <span asp-validation-for="ExistingUser" class="text-danger"></span>
+            <div class="validation-group">
+                <input type="hidden" asp-for="ExistingUser">
+                <span asp-validation-for="ExistingUser" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" class="btn btn-primary btn-block" value="Entrar" />
                 <a asp-page="/Index" class="btn btn-secondary btn-block">Cancelar</a>
