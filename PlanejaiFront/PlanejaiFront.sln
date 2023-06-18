@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanejaiFront", "PlanejaiFront.csproj", "{54825A49-55D6-470B-8E9B-A6AD1DC58842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanejaiBack", "..\PlanejaiBack\PlanejaiBack.csproj", "{5771732C-A8C9-4048-8BC2-52443AC7DA18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanejaiBack", "..\PlanejaiBack\PlanejaiBack.csproj", "{5771732C-A8C9-4048-8BC2-52443AC7DA18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

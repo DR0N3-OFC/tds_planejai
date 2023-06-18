@@ -24,11 +24,11 @@ namespace PlanejaiBack.Migrations
 
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
-                    b.Property<int?>("EventId")
+                    b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("EventId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EventId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -49,7 +49,7 @@ namespace PlanejaiBack.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("OrganizerId")
+                    b.Property<int>("OrganizerId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("StartDate")
@@ -84,11 +84,11 @@ namespace PlanejaiBack.Migrations
 
             modelBuilder.Entity("PlanejaiBack.Models.GuestModel", b =>
                 {
-                    b.Property<int?>("GuestId")
+                    b.Property<int>("GuestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("GuestId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GuestId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -113,11 +113,11 @@ namespace PlanejaiBack.Migrations
 
             modelBuilder.Entity("PlanejaiBack.Models.UserModel", b =>
                 {
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -148,7 +148,9 @@ namespace PlanejaiBack.Migrations
                 {
                     b.HasOne("PlanejaiBack.Models.UserModel", "Organizer")
                         .WithMany("Events")
-                        .HasForeignKey("OrganizerId");
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Organizer");
                 });

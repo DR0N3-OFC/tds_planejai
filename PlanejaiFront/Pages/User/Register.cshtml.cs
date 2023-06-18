@@ -53,6 +53,8 @@ namespace PlanejaiFront.Pages.User
                 var userId = Convert.ToInt32(createdUserUrl?.Split('/').LastOrDefault());
 
                 httpContext.Session.SetInt32("UserID", userId);
+                httpContext.Session.SetString("UserName", NewUser.Name!);
+                httpContext.Session.SetString("UserLastName", NewUser.LastName!);
 
                 return RedirectToPage("/Events/Index");
             }

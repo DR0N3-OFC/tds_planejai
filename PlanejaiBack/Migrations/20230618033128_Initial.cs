@@ -58,7 +58,7 @@ namespace PlanejaiBack.Migrations
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Local = table.Column<string>(type: "text", nullable: false),
-                    OrganizerId = table.Column<int>(type: "integer", nullable: true)
+                    OrganizerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,7 +67,8 @@ namespace PlanejaiBack.Migrations
                         name: "FK_Events_Users_OrganizerId",
                         column: x => x.OrganizerId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

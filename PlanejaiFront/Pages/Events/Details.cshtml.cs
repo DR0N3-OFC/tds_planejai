@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using PlanejaiFront.Models;
 using PlanejaiFront.Models.APIConnection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PlanejaiFront.Pages.Events
 {
@@ -13,10 +15,14 @@ namespace PlanejaiFront.Pages.Events
 
         public List<GuestModel> GuestList { get; set; } = new();
 
+        public string OrganizerFullName;
+
         readonly HttpContext httpContext;
-        public Details(IHttpContextAccessor httpContextAccessor)
+
+        public Details (IHttpContextAccessor httpContextAccessor)
         {
             httpContext = httpContextAccessor.HttpContext!;
+            OrganizerFullName = $"{httpContext.Session.GetString("UserName")} {httpContext.Session.GetString("UserLastName")}";
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -32,14 +38,28 @@ namespace PlanejaiFront.Pages.Events
             Event = eventsList!.Where(e => e.EventId == id).FirstOrDefault();
 
             httpClient = new HttpClient();
-            url = $"{APIConnection.URL}/Users/{httpContext.Session.GetInt32("UserID")}";
+            url = $"{APIConnection.URL}/GuestsByEvent/{id}";
             requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
             response = await httpClient.SendAsync(requestMessage);
             content = await response.Content.ReadAsStringAsync();
-            var organizer = JsonConvert.DeserializeObject<UserModel>(content);
 
-            Event!.Organizer = organizer;
+            var EventGuestsList = JsonConvert.DeserializeObject<List<EventsGuests>>(content);
+
+            foreach (var eg in EventGuestsList!)
+            {
+                httpClient = new HttpClient();
+                url = $"{APIConnection.URL}/Guests/{eg.GuestId}";
+                requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+                response = await httpClient.SendAsync(requestMessage);
+                content = await response.Content.ReadAsStringAsync();
+
+                var guest = JsonConvert.DeserializeObject<GuestModel>(content);
+
+                if (guest != null)
+                    GuestList.Add(guest);
+            }
 
             return Page();
         }

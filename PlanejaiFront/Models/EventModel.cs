@@ -7,7 +7,7 @@ namespace PlanejaiFront.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? EventId { get; set; }
+        public int EventId { get; set; }
 
         [Required(ErrorMessage = "Informe um nome.")]
         public string? Name { get; set; }
