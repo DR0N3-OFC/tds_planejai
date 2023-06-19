@@ -49,12 +49,14 @@
     }
 
     .profile-content {
+        width: 75%;
         display: flex;
-        margin: 50px;
+        justify-content: space-around;
+        margin: 50px auto;
+        align-self: center;
     }
 
     .user-data {
-        margin-left: 50px;
         align-self: center;
     }
 </style>
@@ -72,7 +74,7 @@
         </div>
         <div class="btn-container">
             <a asp-page="/User/Edit" class="btn btn-primary">Editar Perfil</a>
-            <a class="btn btn-link text-danger" href="/Index" onclick="@{Model.HttpContext.Session.Clear();}">Encerrar sessão</a>
+            <button class="btn btn-link text-danger" href="/Index" onclick="#">Encerrar sessão</button>
         </div>
     </div>
 </div>

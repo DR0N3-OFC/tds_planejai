@@ -37,10 +37,11 @@ namespace PlanejaiFront.Pages.User
                 return Page();
             }
 
+            var sessionToken = httpContext.Session!.Id;
             var httpClient = new HttpClient();
             var url = $"{APIConnection.URL}/Users/{httpContext.Session!.GetInt32("UserID")}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
-
+            requestMessage.Headers.Add("Session-Token", sessionToken);
             var response = await httpClient.SendAsync(requestMessage);
             var content = await response.Content.ReadAsStringAsync();
 

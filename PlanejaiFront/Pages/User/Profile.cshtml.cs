@@ -20,13 +20,13 @@ namespace PlanejaiFront.Pages.User
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !httpContext.Session!.GetInt32("UserID").HasValue)
             {
-                return Page();
+                return RedirectToPage("/User/Login");
             }
 
             var httpClient = new HttpClient();
-            var url = $"{APIConnection.URL}/Users/{httpContext.Session.GetInt32("UserID")}";
+            var url = $"{APIConnection.URL}/Users/{httpContext.Session!.GetInt32("UserID")}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
             var response = await httpClient.SendAsync(requestMessage);
@@ -44,10 +44,9 @@ namespace PlanejaiFront.Pages.User
             return RedirectToPage("/Index");
         }
 
-        public IActionResult EndSession()
+        public RedirectToPageResult EndSession()
         {
-            httpContext.Session!.Clear();
-
+            httpContext.Session.Clear();
             return RedirectToPage("/Index");
         }
     }
