@@ -78,6 +78,16 @@
         margin: 10px 0;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
+
+    .guest-list-line {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .remove-link {
+        align-self: center;
+    }
 </style>
 
 <div class="wrapper">
@@ -91,17 +101,21 @@
         <p><strong>Organizador:</strong> @Model.OrganizerFullName</p>
 
         <div class="guest-list">
-            <h2 class="text-center">Lista de convidados</h2>
+            <h2 class="text-center">Lista de convidados</h2><p><a asp-page="/Guests/Add" asp-route-id="@Model.Event.EventId">Adicionar convidado</a></p>
             @if (Model.GuestList.Count > 0)
             {
                 @foreach (var guest in Model.GuestList)
                 {
                     <hr />
-                    <p><strong>@guest.Name @guest.LastName</strong> (@guest.Email)</p>
-                    <p><strong>Telefone:</strong> @guest.PhoneNumber</p>
+                    <div class="guest-list-line">
+                        <div class="part">
+                            <p><strong>@guest.Name @guest.LastName</strong> (@guest.Email)</p>
+                            <p><strong>Telefone:</strong> @guest.PhoneNumber</p>
+                        </div>
+                        <p class="part remove-link"><a asp-page="/Guests/Remove" asp-route-eventId="@Model.Event.EventId" asp-route-guestId="@guest.GuestId" class="btn btn-link text-danger">Remover</a></p>
+                    </div>
                 }
                 <hr />
-                <p><a asp-page="/Guests/Add" asp-route-id="@Model.Event.EventId">Adicionar convidado</a></p>
             }
             else
             {

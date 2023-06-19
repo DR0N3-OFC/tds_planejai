@@ -1,33 +1,24 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using PlanejaiFront.Models;
 using PlanejaiFront.Models.APIConnection;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
 
 namespace PlanejaiFront.Pages.User
 {
-    public class Login : PageModel
+    public class Profile : PageModel
     {
+        [BindProperty]
         public UserModel? ExistingUser { get; set; }
 
-        [BindProperty]
-        [Required(ErrorMessage = "Informe um e-mail válido.")]
-        public string? Email { get; set; }
-
-        [BindProperty]
-        [Required(ErrorMessage = "Informe uma senha.")]
-        public string? Password { get; set; }
-
         readonly HttpContext httpContext;
-        public Login (IHttpContextAccessor httpContextAccessor) 
+        public Profile (IHttpContextAccessor httpContextAccessor)
         {
             httpContext = httpContextAccessor.HttpContext!;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -35,7 +26,7 @@ namespace PlanejaiFront.Pages.User
             }
 
             var httpClient = new HttpClient();
-            var url = $"{APIConnection.URL}/Users/{Email}/{Password}";
+            var url = $"{APIConnection.URL}/Users/{httpContext.Session.GetInt32("UserID")}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
             var response = await httpClient.SendAsync(requestMessage);
@@ -47,18 +38,17 @@ namespace PlanejaiFront.Pages.User
 
                 ExistingUser = existingUser;
 
-                httpContext.Session.SetInt32("UserID", ExistingUser!.UserId);
-                httpContext.Session.SetString("UserName", ExistingUser!.Name!);
-                httpContext.Session.SetString("UserLastName", ExistingUser!.LastName!);
-
-                return RedirectToPage("/Events/Index");
-            }
-            else
-            {
-                ModelState.AddModelError("ExistingUser", content);
-
                 return Page();
             }
+
+            return RedirectToPage("/Index");
+        }
+
+        public IActionResult EndSession()
+        {
+            httpContext.Session!.Clear();
+
+            return RedirectToPage("/Index");
         }
     }
 }

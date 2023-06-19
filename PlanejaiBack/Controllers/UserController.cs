@@ -58,19 +58,15 @@ namespace PlanejaiBack.Controllers
             return BadRequest("O e-mail informado já está em uso.");
         }
 
-        [HttpPut("/Users/{id:int}")]
-        public IActionResult Put([FromRoute] int id, [FromBody] UserModel user, [FromServices] AppDbContext context)
+        [HttpPut("/EditUser/{userId:int}")]
+        public IActionResult Put([FromRoute] int userId, [FromBody] UserModel user, [FromServices] AppDbContext context)
         {
-            var existingUser = context.Users!.FirstOrDefault(u => u.UserId == id);
-
-            if (existingUser != null)
+            if (userId == user.UserId)
             {
-                existingUser.Password = user.Password;
-
-                context.Users!.Update(existingUser);
+                context.Users!.Update(user);
                 context.SaveChanges();
 
-                return Ok(existingUser);
+                return Ok(user);
             }
 
             return NotFound();

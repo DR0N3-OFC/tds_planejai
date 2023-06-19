@@ -69,7 +69,7 @@
                 }
                 else
                 {
-                    <a asp-page="#" class="nav-link">@httpContext.Session!.GetString("UserName")</a>
+                    <a asp-page="/User/Profile" class="nav-link">@httpContext.Session!.GetString("UserName")</a>
                 }
             </li>
         </ul>

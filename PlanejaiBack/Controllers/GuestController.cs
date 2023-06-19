@@ -97,5 +97,21 @@ namespace PlanejaiBack.Controllers
 
             return NotFound();
         }
+
+        [HttpDelete("/Guests/{eventId:int}/{guestId:int}")]
+        public IActionResult Delete([FromRoute] int eventId, int guestId, [FromServices] AppDbContext context)
+        {
+            var eventsGuests = context.EventsGuests!.Find(eventId, guestId);
+
+            if (eventsGuests != null)
+            {
+                context.EventsGuests!.Remove(eventsGuests);
+                context.SaveChanges();
+
+                return Ok(eventsGuests);
+            }
+
+            return NotFound("O convidado já foi removido.");
+        }
     }
 }
