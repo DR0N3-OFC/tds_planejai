@@ -6,15 +6,7 @@ namespace PlanejaiBack.Data
     {
         public static void Initialize(AppDbContext context)
         {
-            if (context.Events!.Any())
-            {
-                return;
-            }
-            if (context.Users!.Any())
-            {
-                return;
-            }
-            if (context.Guests!.Any())
+            if (context.Users!.Any() || context.Events!.Any())
             {
                 return;
             }
