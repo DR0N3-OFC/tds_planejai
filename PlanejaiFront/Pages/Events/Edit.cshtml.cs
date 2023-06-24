@@ -10,27 +10,15 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 
-namespace PlanejaiFront.Pages.User
+namespace PlanejaiFront.Pages.Events
 {
-    [BindProperties]
     public class Edit : PageModel
     {
-        public UserModel UserToEdit { get; set; } = new();
+        [BindProperty]
+        public EventModel EventToEdit { get; set; } = new();
+        public bool DatesAreValid { get; set; }
 
-        [Required(ErrorMessage = "Informe uma senha.")]
-        public string? Password { get; set; }
-
-        [Required(ErrorMessage = "Confirme sua senha.")]
-        [Compare("Password", ErrorMessage = "As senhas não são idênticas.")]
-        public string? ConfirmPassword { get; set; }
-
-        readonly HttpContext httpContext;
-        public Edit (IHttpContextAccessor httpContextAccessor)
-        {
-            httpContext = httpContextAccessor.HttpContext!;
-        }
-
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -38,44 +26,49 @@ namespace PlanejaiFront.Pages.User
             }
 
             var httpClient = new HttpClient();
-            var url = $"{APIConnection.URL}/Users/{httpContext.Session!.GetInt32("UserID")}";
+            var url = $"{APIConnection.URL}/Events/{id}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
             var response = await httpClient.SendAsync(requestMessage);
             var content = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                var existingUser = JsonConvert.DeserializeObject<UserModel>(content);
+                var existingActivity = JsonConvert.DeserializeObject<EventModel>(content);
 
-                UserToEdit = existingUser!;
+                EventToEdit = existingActivity!;
 
                 return Page();
             }
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Events/Index");
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            DatesAreValid = EventToEdit.DatesAreValid();
+
+            if (!ModelState.IsValid || !DatesAreValid)
             {
+                if (!DatesAreValid)
+                {
+                    ModelState.AddModelError("DatesAreValid", "Os horários das atividades devem estar entre o início e final do evento.");
+                }
+
                 return Page();
             }
 
-            UserToEdit.Password = Password;
-
             var httpClient = new HttpClient();
-            var url = $"{APIConnection.URL}/EditUser/{httpContext.Session!.GetInt32("UserID")}";
+            var url = $"{APIConnection.URL}/EditEvent/{EventToEdit.EventId}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, url);
-            var jsonUser = JsonConvert.SerializeObject(UserToEdit);
-            requestMessage.Content = new StringContent(jsonUser, Encoding.UTF8, "application/json");
+            var jsonEvent = JsonConvert.SerializeObject(EventToEdit);
+            requestMessage.Content = new StringContent(jsonEvent, Encoding.UTF8, "application/json");
             var response = await httpClient.SendAsync(requestMessage);
 
             var content = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("/User/Profile");
+                return RedirectToPage("/Events/Details", new { id = EventToEdit.EventId });
             }
             else
             {

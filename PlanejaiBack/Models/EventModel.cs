@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PlanejaiBack.Models
 {
@@ -32,7 +33,13 @@ namespace PlanejaiBack.Models
         public int OrganizerId { get; set; }
         public UserModel? Organizer { get; set; }
 
+        public int ScheduleId { get; set; }
+        [JsonIgnore]
+        public ScheduleModel? Schedule { get; set; }
+
         public List<EventsGuests>? EventsGuests { get; set; } = new List<EventsGuests>();
+
+        public List<ActivityModel>? Activities { get; set; } = new List<ActivityModel>();
 
         public bool DatesAreValid ()
         {

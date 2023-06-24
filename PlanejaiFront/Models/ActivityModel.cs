@@ -1,18 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace PlanejaiFront.Models
 {
-    public class EventModel
+    public class ActivityModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EventId { get; set; }
+        public int ActivityId { get; set; }
 
         [Required(ErrorMessage = "Informe um nome.")]
         public string? Name { get; set; }
-
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Informe uma data de início.")]
@@ -27,31 +25,27 @@ namespace PlanejaiFront.Models
         [Required(ErrorMessage = "Informe um horário de encerramento.")]
         public DateTime? EndsAt { get; set; }
 
-        [Required(ErrorMessage = "Informe um local.")]
-        public string? Local { get; set; }
-
-        public int OrganizerId { get; set; }
-        public UserModel? Organizer { get; set; }
-
         public int ScheduleId { get; set; }
-        [JsonIgnore]
+
         public ScheduleModel? Schedule { get; set; }
 
-        public List<EventsGuests>? EventsGuests { get; set; } = new List<EventsGuests>();
-
-        public bool DatesAreValid ()
+        public bool DatesAreValid(ScheduleModel sch)
         {
             if (EndDate.HasValue && EndsAt.HasValue && StartDate.HasValue && StartsAt.HasValue)
             {
-                DateTime endDateTime = EndDate.Value.Date + EndsAt.Value.TimeOfDay;
-                DateTime startDateTime = StartDate.Value.Date + StartsAt.Value.TimeOfDay;
+                DateTime activityEndDateTime = EndDate.Value.Date + EndsAt.Value.TimeOfDay;
+                DateTime activityStartDateTime = StartDate.Value.Date + StartsAt.Value.TimeOfDay;
 
-                if (endDateTime < startDateTime)
+                DateTime eventEndDateTime = sch!.Event!.EndDate!.Value.Date + sch!.Event!.EndsAt!.Value.TimeOfDay;
+                DateTime eventStartDateTime = sch!.Event!.StartDate!.Value.Date + sch!.Event!.StartsAt!.Value.TimeOfDay;
+
+                if (activityStartDateTime < eventStartDateTime || activityEndDateTime > eventEndDateTime)
                 {
                     return false;
                 }
             }
-            
+
+
             return true;
         }
     }

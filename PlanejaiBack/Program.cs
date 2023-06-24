@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using PlanejaiBack.Data;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 

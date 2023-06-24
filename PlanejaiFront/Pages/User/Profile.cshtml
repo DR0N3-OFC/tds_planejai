@@ -59,6 +59,10 @@
     .user-data {
         align-self: center;
     }
+
+    .btn-link:hover {
+        text-decoration: none;
+    }
 </style>
 
 <div class="wrapper">
@@ -72,10 +76,10 @@
                 <p><strong>Telefone:</strong> @Model.ExistingUser!.PhoneNumber</p>
             </div>
         </div>
-        <div class="btn-container">
+        <form class="btn-container" method="post">
             <a asp-page="/User/Edit" class="btn btn-primary">Editar Perfil</a>
-            <button class="btn btn-link text-danger" href="/Index" onclick="#">Encerrar sessão</button>
-        </div>
+            <button type="submit" class="btn btn-link text-danger">Encerrar sessão</button>
+        </form>
     </div>
 </div>
 

@@ -53,12 +53,13 @@ namespace PlanejaiBack.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    StartsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StartsAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndsAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Local = table.Column<string>(type: "text", nullable: false),
-                    OrganizerId = table.Column<int>(type: "integer", nullable: false)
+                    OrganizerId = table.Column<int>(type: "integer", nullable: false),
+                    ScheduleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,6 +96,67 @@ namespace PlanejaiBack.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Schedules",
+                columns: table => new
+                {
+                    ScheduleId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    EventId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedules", x => x.ScheduleId);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "EventId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    ActivityId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StartsAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndsAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ScheduleId = table.Column<int>(type: "integer", nullable: false),
+                    EventModelEventId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.ActivityId);
+                    table.ForeignKey(
+                        name: "FK_Activities_Events_EventModelEventId",
+                        column: x => x.EventModelEventId,
+                        principalTable: "Events",
+                        principalColumn: "EventId");
+                    table.ForeignKey(
+                        name: "FK_Activities_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "ScheduleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_EventModelEventId",
+                table: "Activities",
+                column: "EventModelEventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_ScheduleId",
+                table: "Activities",
+                column: "ScheduleId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Events_OrganizerId",
                 table: "Events",
@@ -104,19 +166,31 @@ namespace PlanejaiBack.Migrations
                 name: "IX_EventsGuests_GuestId",
                 table: "EventsGuests",
                 column: "GuestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedules_EventId",
+                table: "Schedules",
+                column: "EventId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Activities");
+
+            migrationBuilder.DropTable(
                 name: "EventsGuests");
 
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "Guests");
+
+            migrationBuilder.DropTable(
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -32,7 +32,7 @@ namespace PlanejaiBack.Controllers
         }
 
         [HttpGet("/EventsByUser/{id:int}")]
-        public IActionResult GetByUSer([FromRoute] int id, [FromServices] AppDbContext context)
+        public IActionResult GetByUser([FromRoute] int id, [FromServices] AppDbContext context)
         {
             return Ok(context.Events!.Where(e => e.Organizer!.UserId == id).OrderBy(e => e.StartDate).ToList());
         }
@@ -62,28 +62,34 @@ namespace PlanejaiBack.Controllers
             return BadRequest("O evento já foi criado!");
         }
 
-        [HttpPut("/Events/{id:int}")]
+        [HttpPut("/EditEvent/{id:int}")]
         public IActionResult Put([FromRoute] int id, [FromBody] EventModel eventModel, [FromServices] AppDbContext context)
         {
-            var existingEvent = context.Events!.FirstOrDefault(e => e.EventId == id);
-
-            if (existingEvent != null)
+            if (id == eventModel.EventId)
             {
-                existingEvent.Name = eventModel.Name;
-                existingEvent.Description = eventModel.Description;
-                existingEvent.StartDate = eventModel.StartDate;
-                existingEvent.StartsAt = eventModel.StartsAt;
-                existingEvent.EndDate = eventModel.EndDate;
-                existingEvent.EndsAt = eventModel.EndsAt;
-                existingEvent.Local = eventModel.Local;
-
-                context.Events!.Update(existingEvent);
+                context.Events!.Update(eventModel);
                 context.SaveChanges();
 
-                return Ok(existingEvent);
+                return Ok(eventModel);
             }
 
             return NotFound();
+        }
+
+        [HttpDelete("/Events/{eventId:int}")]
+        public IActionResult Delete([FromRoute] int eventId, [FromServices] AppDbContext context)
+        {
+            var eventModel = context.Events!.Find(eventId);
+
+            if (eventModel != null)
+            {
+                context.Events!.Remove(eventModel);
+                context.SaveChanges();
+
+                return Ok(eventModel);
+            }
+
+            return NotFound("O evento já foi removido.");
         }
     }
 }

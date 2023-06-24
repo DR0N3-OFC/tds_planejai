@@ -2,6 +2,7 @@
 @model PlanejaiFront.Pages.Events.Details
 @{
     ViewData["Title"] = $"Planejaí - {Model.Event!.Name}";
+    var imageURL = "https://th.bing.com/th/id/R.3e77a1db6bb25f0feb27c95e05a7bc57?rik=DswMYVRRQEHbjQ&riu=http%3a%2f%2fwww.coalitionrc.com%2fwp-content%2fuploads%2f2017%2f01%2fplaceholder.jpg&ehk=AbGRPPcgHhziWn1sygs8UIL6XIb1HLfHjgPyljdQrDY%3d&risl=&pid=ImgRaw&r=0";
 }
 
 <style>
@@ -88,22 +89,27 @@
     .remove-link {
         align-self: center;
     }
+
+    .remove-button:hover {
+        text-decoration: none;    }
 </style>
 
 <div class="wrapper">
     <div class="event-details">
-        <img src="https://tvc16.com/portal/wp-content/uploads/2022/06/WhatsApp-Image-2022-06-05-at-15.59.15.jpeg" alt="Imagem do evento @(Model.Event.Name)." />
+        <img src="@imageURL" alt="Imagem do evento @(Model.Event.Name)." />
         <h2 class="text-center">@Model.Event.Name</h2>
         <p class="text-center">@Model.Event.Description</p>
         <p><strong>Local:</strong> @Model.Event.Local</p>
         <p><strong>Início:</strong> @Model.Event.StartDate?.ToShortDateString() - @Model.Event.StartsAt?.ToShortTimeString()</p>
         <p><strong>Encerramento:</strong> @Model.Event.EndDate?.ToShortDateString() - @Model.Event.EndsAt?.ToShortTimeString()</p>
         <p><strong>Organizador:</strong> @Model.OrganizerFullName</p>
+        <p><a asp-page="/Events/Edit" asp-route-id="@Model.Event.EventId">Editar evento</a></p>
 
         <div class="guest-list">
-            <h2 class="text-center">Lista de convidados</h2><p><a asp-page="/Guests/Add" asp-route-id="@Model.Event.EventId">Adicionar convidado</a></p>
+            <h2 class="text-center">Lista de convidados</h2>
             @if (Model.GuestList.Count > 0)
             {
+                <p><a asp-page="/Guests/Add" asp-route-id="@Model.Event.EventId">Adicionar convidado</a></p>
                 @foreach (var guest in Model.GuestList)
                 {
                     <hr />
@@ -126,5 +132,6 @@
 
     <div class="btn-container">
         <a asp-page="/Events/Index" class="btn btn-primary btn-lg">Voltar à lista de eventos</a>
+        <a asp-page="/Events/Remove" asp-route-id="@Model.Event.EventId" class="text-danger btn btn-link btn-lg remove-button">Excluir evento</a>
     </div>
 </div>

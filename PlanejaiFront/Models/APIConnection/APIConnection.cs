@@ -2,6 +2,6 @@
 {
     public class APIConnection
     {
-        public static string URL = "http://localhost:5111";
+        public static string URL = "http://webapi:5111";
     }
 }

@@ -32,7 +32,7 @@ namespace PlanejaiBack.Controllers
         }
 
         [HttpGet("/GuestsByEvent/{id:int}")]
-        public IActionResult GetByEventID([FromRoute] int id, [FromServices] AppDbContext context)
+        public IActionResult GetByEvent([FromRoute] int id, [FromServices] AppDbContext context)
         {
             var guests = context.EventsGuests!.Where(eg => eg.EventId == id).ToList();
 

@@ -22,23 +22,25 @@ namespace PlanejaiFront.Pages.Events
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var eventDate = NewEvent.StartDate!.Value.Date;
+            var eventStartsAt = NewEvent.StartsAt!.Value.TimeOfDay;
             DatesAreValid = NewEvent.DatesAreValid();
 
             if (!ModelState.IsValid || !DatesAreValid || 
-                NewEvent.StartDate!.Value.Date + NewEvent.StartsAt!.Value.TimeOfDay < DateTime.Now ||
-                NewEvent.EndDate!.Value.Date > NewEvent.StartDate!.Value.Date.AddDays(7))
+                eventDate + eventStartsAt < DateTime.Now ||
+                eventDate > eventDate.AddDays(7))
             {
                 if (!DatesAreValid)
                 {
                     ModelState.AddModelError("DatesAreValid", "A data de encerramento deve ser posterior à data e horário de início.");
                 }
 
-                if ((NewEvent.StartDate!.Value.Date + NewEvent.StartsAt!.Value.TimeOfDay) < DateTime.Now)
+                if ((eventDate + eventStartsAt) < DateTime.Now)
                 {
                     ModelState.AddModelError("DatesAreValid", "A data de início deve ser posterior à data e horário atual.");
                 }
 
-                if (NewEvent.EndDate!.Value.Date > NewEvent.StartDate!.Value.Date.AddDays(7))
+                if (eventDate > eventDate.AddDays(7))
                 {
                     ModelState.AddModelError("DatesAreValid", "A duração do evento não pode ultrapassar uma semana.");
                 }

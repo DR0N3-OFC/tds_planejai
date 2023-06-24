@@ -12,7 +12,7 @@ using PlanejaiBack.Data;
 namespace PlanejaiBack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230618033128_Initial")]
+    [Migration("20230623232838_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,52 @@ namespace PlanejaiBack.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("PlanejaiBack.Models.ActivityModel", b =>
+                {
+                    b.Property<int>("ActivityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ActivityId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EndDate")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("EndsAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("EventModelEventId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartDate")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("StartsAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("ActivityId");
+
+                    b.HasIndex("EventModelEventId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("Activities", (string)null);
+                });
 
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
@@ -38,11 +84,11 @@ namespace PlanejaiBack.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .IsRequired()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("EndsAt")
                         .IsRequired()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Local")
                         .IsRequired()
@@ -55,13 +101,16 @@ namespace PlanejaiBack.Migrations
                     b.Property<int>("OrganizerId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("StartDate")
                         .IsRequired()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("StartsAt")
                         .IsRequired()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("EventId");
 
@@ -114,6 +163,29 @@ namespace PlanejaiBack.Migrations
                     b.ToTable("Guests", (string)null);
                 });
 
+            modelBuilder.Entity("PlanejaiBack.Models.ScheduleModel", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ScheduleId"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ScheduleId");
+
+                    b.HasIndex("EventId")
+                        .IsUnique();
+
+                    b.ToTable("Schedules", (string)null);
+                });
+
             modelBuilder.Entity("PlanejaiBack.Models.UserModel", b =>
                 {
                     b.Property<int>("UserId")
@@ -147,6 +219,21 @@ namespace PlanejaiBack.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("PlanejaiBack.Models.ActivityModel", b =>
+                {
+                    b.HasOne("PlanejaiBack.Models.EventModel", null)
+                        .WithMany("Activities")
+                        .HasForeignKey("EventModelEventId");
+
+                    b.HasOne("PlanejaiBack.Models.ScheduleModel", "Schedule")
+                        .WithMany("Activities")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
+                });
+
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
                     b.HasOne("PlanejaiBack.Models.UserModel", "Organizer")
@@ -177,14 +264,34 @@ namespace PlanejaiBack.Migrations
                     b.Navigation("Guest");
                 });
 
+            modelBuilder.Entity("PlanejaiBack.Models.ScheduleModel", b =>
+                {
+                    b.HasOne("PlanejaiBack.Models.EventModel", "Event")
+                        .WithOne("Schedule")
+                        .HasForeignKey("PlanejaiBack.Models.ScheduleModel", "EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("PlanejaiBack.Models.EventModel", b =>
                 {
+                    b.Navigation("Activities");
+
                     b.Navigation("EventsGuests");
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("PlanejaiBack.Models.GuestModel", b =>
                 {
                     b.Navigation("EventsGuests");
+                });
+
+            modelBuilder.Entity("PlanejaiBack.Models.ScheduleModel", b =>
+                {
+                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("PlanejaiBack.Models.UserModel", b =>

@@ -44,9 +44,10 @@ namespace PlanejaiFront.Pages.User
             return RedirectToPage("/Index");
         }
 
-        public RedirectToPageResult EndSession()
+        public IActionResult OnPost()
         {
             httpContext.Session.Clear();
+
             return RedirectToPage("/Index");
         }
     }
